@@ -1,11 +1,12 @@
 package com.mindmoney.ui.finanzas
-
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.mindmoney.R
+import android.app.AlertDialog
+import android.widget.Button
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -33,9 +34,30 @@ class FinanzasFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_finanzas, container, false)
+    ): View {
+        val vista = inflater.inflate(
+            R.layout.fragment_finanzas,
+            container,
+            false
+        )
+        val cardIngresos = vista.findViewById<androidx.cardview.widget.CardView>(R.id.cardIngresos)
+        cardIngresos.setOnClickListener {
+            val dialogView = LayoutInflater.from(requireContext())
+                .inflate(R.layout.dialog_ingreso, null)
+            val dialog = AlertDialog.Builder(requireContext())
+                .setView(dialogView)
+                .create()
+            dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+            dialog.show()
+
+            val botonCancelar =
+                dialogView.findViewById<Button>(R.id.buttonCancelarIngreso)
+            botonCancelar.setOnClickListener {
+                dialog.dismiss()
+            }
+        }
+        return vista
     }
 
     companion object {
