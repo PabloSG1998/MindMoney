@@ -7,6 +7,9 @@ import android.view.ViewGroup
 import com.mindmoney.R
 import android.app.AlertDialog
 import android.widget.Button
+import android.widget.EditText
+import android.widget.Toast
+import com.mindmoney.Transaccion
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -20,6 +23,9 @@ private const val ARG_PARAM2 = "param2"
  */
 class FinanzasFragment : Fragment() {
     // TODO: Rename and change types of parameters
+    private val listaTransacciones = mutableListOf<Transaccion>()
+    private var totalIngresos = 0.0
+    private var totalGastos = 0.0
     private var param1: String? = null
     private var param2: String? = null
 
@@ -48,14 +54,51 @@ class FinanzasFragment : Fragment() {
                 .setView(dialogView)
                 .create()
             dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-
-            dialog.show()
-
+            val editTitulo =
+                dialogView.findViewById<EditText>(R.id.editTitulo)
+            val editCantidad =
+                dialogView.findViewById<EditText>(R.id.editCantidad)
+            val botonGuardar =
+                dialogView.findViewById<Button>(R.id.buttonGuardarIngreso)
             val botonCancelar =
                 dialogView.findViewById<Button>(R.id.buttonCancelarIngreso)
+
             botonCancelar.setOnClickListener {
                 dialog.dismiss()
             }
+
+            botonGuardar.setOnClickListener {
+
+                val titulo = editTitulo.text.toString().trim()
+                val cantidadTexto = editCantidad.text.toString().trim()
+
+                if (titulo.isEmpty() || cantidadTexto.isEmpty()) {
+                    Toast.makeText(
+                        requireContext(),
+                        "Completa todos los campos",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    return@setOnClickListener
+                }
+
+                val cantidad = cantidadTexto.toDouble()
+                val nuevaTransaccion = Transaccion(
+                    titulo = titulo,
+                    cantidad = cantidad,
+                    categoria = "📈",
+                    esIngreso = true
+                )
+
+                listaTransacciones.add(0, nuevaTransaccion)
+                totalIngresos += cantidad
+                Toast.makeText(
+                    requireContext(),
+                    "Ingreso guardado",
+                    Toast.LENGTH_SHORT
+                ).show()
+                dialog.dismiss()
+            }
+            dialog.show()
         }
         return vista
     }
